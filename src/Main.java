@@ -13,11 +13,13 @@ public class Main {
         manager.addSubtask(subtask1);
         Subtask subtask2 = new Subtask("Сказать слова прощания", "До свидания и наилучшие пожелания всем", 3);
         manager.addSubtask(subtask2);
+        Subtask subtask3 = new Subtask("Упаковать кошку", "Посадить кошку в переноску", 3);
+        manager.addSubtask(subtask3);
 
         Epic epic2 = new Epic("Организовать праздник", "Купить свечи, продукты, позвать гостей");
         manager.addEpic(epic2);
-        Subtask subtask3 = new Subtask("Приготовить еду", "Купить продукты, найти рецепты", 6);
-        manager.addSubtask(subtask3);
+        Subtask subtask4 = new Subtask("Приготовить еду", "Купить продукты, найти рецепты", 7);
+        manager.addSubtask(subtask4);
 
         manager.getTasks();
         manager.getEpics();
@@ -25,16 +27,25 @@ public class Main {
         manager.updateTask(task1, "", "", Status.DONE);
         manager.updateTask(task2, "", "", Status.IN_PROGRESS);
         manager.updateSubtask(subtask1, "", "", Status.IN_PROGRESS);
-        manager.updateSubtask(subtask2, "", "", Status.IN_PROGRESS);
+        manager.updateSubtask(subtask2, "", "", Status.NEW);
+        manager.updateSubtask(subtask3, "", "", Status.DONE);
+        manager.updateSubtask(subtask4, "", "", Status.IN_PROGRESS);
+
+        manager.getTasks();
+        manager.getEpics();
+
+        manager.updateSubtask(subtask1, "", "", Status.DONE);
+        manager.updateSubtask(subtask2, "", "", Status.DONE);
         manager.updateSubtask(subtask3, "", "", Status.DONE);
 
         manager.getTasks();
         manager.getEpics();
 
         manager.deleteTaskById(2);
-        manager.deleteEpicById(6);
+        manager.deleteEpicById(7);
 
         manager.getTasks();
         manager.getEpics();
+        manager.getSubtasks();
     }
 }

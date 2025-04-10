@@ -15,11 +15,12 @@ public class Epic extends Task {
         StringBuilder result = new StringBuilder("Эпик " + id +
                 ": название: " + name +
                 ", описание: " + description +
-                ", статус: " + status + '\n' +
-                "Подзадачи эпика " + id + ":" + '\n');
+                ", статус: " + status + '\n');
 
-        for (int subtask : subtasks.keySet()) {
-            result.append("     ").append(subtasks.get(subtask)).append('\n');
+        if (!subtasks.isEmpty()) {
+            for (int subtask : subtasks.keySet()) {
+                result.append("     ").append(subtasks.get(subtask)).append('\n');
+            }
         }
 
         return result.toString();

@@ -51,26 +51,29 @@ public class Manager {
     }
 
     public void updateStatus(Epic epic) {
-        Status status = Status.NEW;
-        Status oldValue = null;
+        Status status;
+        Status newValue = null;
+        Status inProgressValue = null;
+        Status doneValue = null;
 
         for (int subtask : epic.subtasks.keySet()) {
-            if (epic.subtasks.get(subtask).status == Status.valueOf("NEW") &&
-                    epic.subtasks.get(subtask).status != oldValue) {
-                oldValue = Status.valueOf("NEW");
-                status = epic.subtasks.get(subtask).status;
-
-            } else if (epic.subtasks.get(subtask).status == Status.valueOf("IN_PROGRESS") &&
-                    epic.subtasks.get(subtask).status != oldValue) {
-                oldValue = Status.valueOf("IN_PROGRESS");
-                status = epic.subtasks.get(subtask).status;
-
-            } if (epic.subtasks.get(subtask).status == Status.valueOf("DONE") &&
-                    epic.subtasks.get(subtask).status != oldValue) {
-                oldValue = Status.valueOf("DONE");
-                status = epic.subtasks.get(subtask).status;
-
+            if (epic.subtasks.get(subtask).status == Status.valueOf("NEW")) {
+                newValue = Status.valueOf("NEW");
+            } else if (epic.subtasks.get(subtask).status == Status.valueOf("IN_PROGRESS")) {
+                inProgressValue = Status.valueOf("IN_PROGRESS");
+            } if (epic.subtasks.get(subtask).status == Status.valueOf("DONE")) {
+                doneValue = Status.valueOf("DONE");
             }
+        }
+
+        if (doneValue != null && doneValue == Status.valueOf("DONE") &&
+                inProgressValue == null && newValue == null) {
+            status = Status.valueOf("DONE");
+        } else if (newValue != null && newValue == Status.valueOf("NEW") &&
+                inProgressValue == null && doneValue == null) {
+            status = Status.valueOf("NEW");
+        } else {
+            status = Status.valueOf("IN_PROGRESS");
         }
 
         epic.status = status;
@@ -106,39 +109,115 @@ public class Manager {
 
     public int generateId() {
         count++;
+
         return count;
     }
 
-    public void getTasks() {
+    public HashMap<Integer, Task> getTasks() {
+        if (tasks.isEmpty()) {
+            System.out.println("Задачи не найдены");
+
+            return null;
+        }
+
         System.out.println("Задачи:");
+
         for (int task : tasks.keySet()) {
             System.out.println(tasks.get(task));
         }
+
+        return tasks;
     }
 
-    public void getEpics() {
+    public HashMap<Integer, Epic> getEpics() {
+        if (epics.isEmpty()) {
+            System.out.println("Эпики не найдены");
+
+            return null;
+        }
+
         System.out.println("Эпики:");
-        for (int epic : epics.keySet()) {
-            System.out.println(epics.get(epic));
+
+        for (int task : epics.keySet()) {
+            System.out.println(epics.get(task));
         }
+
+        return epics;
     }
 
-    public void getSubtasks() {
+    public HashMap<Integer, Subtask> getSubtasks() {
+        if (subtasks.isEmpty()) {
+            System.out.println("Подзадачи не найдены");
+
+            return null;
+        }
+
         System.out.println("Подзадачи:");
-        for (int subtask : subtasks.keySet()) {
-            System.out.println(subtasks.get(subtask));
+
+        for (int task : subtasks.keySet()) {
+            System.out.println(subtasks.get(task));
+        }
+
+        return subtasks;
+    }
+
+    public Task getTaskById(int id) {
+        if (tasks.containsKey(id)) {
+            System.out.println(tasks.get(id));
+
+            return tasks.get(id);
+        } else {
+            System.out.println("Задача " + id + " не найдена.");
+
+            return null;
         }
     }
 
-    public void getSubtasksByEpic(int id) {
+    public Epic getEpicById(int id) {
         if (epics.containsKey(id)) {
-            System.out.println("Подзадачи в рамках эпика " + id + ": ");
-            for (int subtask : epics.get(id).subtasks.keySet()) {
-                System.out.println(subtasks.get(subtask));
+            System.out.println(epics.get(id));
+
+            return epics.get(id);
+        } else {
+            System.out.println("Эпик " + id + " не найден.");
+
+            return null;
+        }
+    }
+
+    public Subtask getSubtaskById(int id) {
+        if (subtasks.containsKey(id)) {
+            System.out.println(subtasks.get(id));
+
+            return subtasks.get(id);
+        } else {
+            System.out.println("Подзадача " + id + " не найдена.");
+
+            return null;
+        }
+    }
+
+    public HashMap<Integer, Subtask> getSubtasksByEpic(int id) {
+        if (epics.containsKey(id)) {
+            if (!epics.get(id).subtasks.isEmpty()) {
+                System.out.println("Подзадачи в рамках эпика " + id + ": ");
+
+                for (int subtask : epics.get(id).subtasks.keySet()) {
+                    System.out.println(subtasks.get(subtask));
+
+                    return subtasks;
+                }
+            } else {
+                System.out.println("Подзадачи в рамках эпика " + id + " не найдены");
+
+                return null;
             }
         } else {
             System.out.println("Эпик " + id + " не найден.");
+
+            return null;
         }
+        return null;
     }
 
     public void deleteTasks() {
@@ -164,8 +243,17 @@ public class Manager {
 
     public void deleteEpicById(int id) {
         if (epics.containsKey(id)) {
+            if (!epics.get(id).subtasks.isEmpty()) {
+                for (int subtask : epics.get(id).subtasks.keySet()) {
+                    subtasks.remove(subtask);
+                }
+
+                System.out.println("Эпик " + id + " и его подзадачи удалены.");
+            } else {
+                System.out.println("Эпик " + id + " удален.");
+            }
+
             epics.remove(id);
-            System.out.println("Эпик " + id + " удален.");
         } else {
             System.out.println("Эпик " + id + " не найден.");
         }

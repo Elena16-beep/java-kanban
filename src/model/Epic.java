@@ -1,12 +1,21 @@
+package model;
+
 import java.util.HashMap;
 
 public class Epic extends Task {
-    public HashMap <Integer, Subtask> subtasks;
+    private HashMap <Integer, Subtask> subtasks;
 
     public Epic(String name, String description) {
-        super();
         this.name = name;
         this.description = description;
+        subtasks = new HashMap<>();
+    }
+
+    public Epic(Integer id, String name, String description, Status status) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = status;
         subtasks = new HashMap<>();
     }
 
@@ -24,5 +33,9 @@ public class Epic extends Task {
         }
 
         return result.toString();
+    }
+
+    public HashMap<Integer, Subtask> getSubtasks() {
+        return subtasks;
     }
 }

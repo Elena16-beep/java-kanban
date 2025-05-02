@@ -1,10 +1,12 @@
+package model;
+
 import java.util.Objects;
 
 public class Task {
-    public String name;
-    public String description;
-    public int id;
-    public Status status;
+    protected String name;
+    protected String description;
+    protected int id;
+    protected Status status;
 
     public Task(String name, String description) {
         this.name = name;
@@ -12,6 +14,13 @@ public class Task {
     }
 
     public Task() {
+    }
+
+    public Task(Integer id, String name, String description, Status status) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = status;
     }
 
     @Override
@@ -48,5 +57,21 @@ public class Task {
                 ": название: " + name +
                 ", описание: " + description +
                 ", статус: " + status;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

@@ -1,8 +1,20 @@
+package model;
+
+import java.util.HashMap;
+
 public class Subtask extends Task {
-    int idEpic;
+    private int idEpic;
 
     public Subtask(String name, String description, int idEpic) {
         super(name, description);
+        this.idEpic = idEpic;
+    }
+
+    public Subtask(Integer id, String name, String description, Status status, int idEpic) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = status;
         this.idEpic = idEpic;
     }
 
@@ -13,5 +25,9 @@ public class Subtask extends Task {
                 ", описание: " + description +
                 ", статус: " + status +
                 ", эпик: " + idEpic;
+    }
+
+    public int getIdEpic() {
+        return idEpic;
     }
 }

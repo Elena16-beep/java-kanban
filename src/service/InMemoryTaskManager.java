@@ -66,28 +66,22 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateStatus(Epic epic) {
         Status status;
-        Status newValue = null;
-        Status inProgressValue = null;
-        Status doneValue = null;
+        int newCount = 0, inProgressCount = 0, doneCount = 0;
 
-        for (int subtask : epic.getSubtasks().keySet()) {
-            if (epic.getSubtasks().get(subtask).getStatus() == Status.valueOf("NEW")) {
-                newValue = Status.valueOf("NEW");
-            } else if (epic.getSubtasks().get(subtask).getStatus() == Status.valueOf("IN_PROGRESS")) {
-                inProgressValue = Status.valueOf("IN_PROGRESS");
-            } if (epic.getSubtasks().get(subtask).getStatus() == Status.valueOf("DONE")) {
-                doneValue = Status.valueOf("DONE");
+        for (Subtask subtasks : epic.getSubtasks().values()) {
+            switch (subtasks.getStatus()) {
+                case NEW -> newCount++;
+                case IN_PROGRESS -> inProgressCount++;
+                case DONE -> doneCount++;
             }
         }
 
-        if (doneValue != null && doneValue == Status.valueOf("DONE") &&
-                inProgressValue == null && newValue == null) {
-            status = Status.valueOf("DONE");
-        } else if (newValue != null && newValue == Status.valueOf("NEW") &&
-                inProgressValue == null && doneValue == null) {
-            status = Status.valueOf("NEW");
+        if (doneCount != 0 && inProgressCount == 0 && newCount == 0) {
+            status = Status.DONE;
+        } else if (newCount != 0 && inProgressCount == 0 && doneCount == 0) {
+            status = Status.NEW;
         } else {
-            status = Status.valueOf("IN_PROGRESS");
+            status = Status.IN_PROGRESS;
         }
 
         epic.setStatus(status);
@@ -135,56 +129,22 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public HashMap<Integer, Task> getTasks() {
-        if (tasks.isEmpty()) {
-            System.out.println("Задачи не найдены");
-        } else {
-
-            System.out.println("Задачи:");
-
-            for (int task : tasks.keySet()) {
-                System.out.println(tasks.get(task));
-            }
-        }
-
         return tasks;
     }
 
     @Override
     public HashMap<Integer, Epic> getEpics() {
-        if (epics.isEmpty()) {
-            System.out.println("Эпики не найдены");
-        } else {
-
-            System.out.println("Эпики:");
-
-            for (int task : epics.keySet()) {
-                System.out.println(epics.get(task));
-            }
-        }
-
         return epics;
     }
 
     @Override
     public HashMap<Integer, Subtask> getSubtasks() {
-        if (subtasks.isEmpty()) {
-            System.out.println("Подзадачи не найдены");
-        } else {
-
-            System.out.println("Подзадачи:");
-
-            for (int task : subtasks.keySet()) {
-                System.out.println(subtasks.get(task));
-            }
-        }
-
         return subtasks;
     }
 
     @Override
     public Task getTaskById(int id) {
         if (tasks.containsKey(id)) {
-            System.out.println(tasks.get(id));
             historyManager.add(tasks.get(id));
 
             return tasks.get(id);
@@ -198,7 +158,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Epic getEpicById(int id) {
         if (epics.containsKey(id)) {
-            System.out.println(epics.get(id));
             historyManager.add(epics.get(id));
 
             return epics.get(id);
@@ -212,7 +171,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Subtask getSubtaskById(int id) {
         if (subtasks.containsKey(id)) {
-            System.out.println(subtasks.get(id));
             historyManager.add(subtasks.get(id));
 
             return subtasks.get(id);

@@ -75,21 +75,6 @@ public class Main {
             System.out.println(taskManager.getEpics().get(task));
         }
 
-        taskManager.deleteTaskById(2);
-        taskManager.deleteEpicById(7);
-
-        System.out.println("Задачи:");
-
-        for (int task : taskManager.getTasks().keySet()) {
-            System.out.println(taskManager.getTasks().get(task));
-        }
-
-        System.out.println("Эпики:");
-
-        for (int task : taskManager.getEpics().keySet()) {
-            System.out.println(taskManager.getEpics().get(task));
-        }
-
         System.out.println("Подзадачи:");
 
         for (int task : taskManager.getSubtasks().keySet()) {
@@ -100,7 +85,23 @@ public class Main {
         taskManager.getEpicById(3);
         taskManager.getSubtaskById(5);
         taskManager.getSubtaskById(6);
+        taskManager.getTaskById(2);
+        taskManager.getEpicById(3);
         taskManager.getTaskById(1);
+        taskManager.getSubtaskById(5);
+        taskManager.getSubtaskById(8);
+        taskManager.getEpicById(3);
+        taskManager.getEpicById(7);
+
+        System.out.println("История:________________________________________________");
+
+        for (Task task : taskManager.getHistory()) {
+            System.out.println(task);
+        }
+
+        taskManager.deleteTaskById(1);
+        taskManager.deleteEpicById(3);
+        taskManager.deleteSubtaskById(8);
 
         System.out.println("История:________________________________________________");
 

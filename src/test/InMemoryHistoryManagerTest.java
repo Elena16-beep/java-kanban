@@ -27,13 +27,11 @@ class InMemoryHistoryManagerTest {
         Task task = new Task("Test addNewTask", "Test addNewTask description");
         taskManager.addTask(task);
 
-        for (int i = 1; i <= 15; i++) {
+        for (int i = 1; i <= 2; i++) {
             historyManager.add(task);
         }
 
-        System.out.println(historyManager.getHistory());
-        assertEquals(10, historyManager.getHistory().size(), "Размер истории ограничен 10 задачами");
         assertEquals(task, historyManager.getHistory().get(0));
-        assertEquals(task, historyManager.getHistory().get(9));
+        assertEquals(1, historyManager.getHistory().size());
     }
 }

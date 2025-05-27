@@ -4,7 +4,9 @@ import model.Epic;
 import model.Status;
 import model.Subtask;
 import model.Task;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import service.HistoryManager;
 import service.Managers;
 import service.TaskManager;
 
@@ -13,7 +15,14 @@ import java.util.HashMap;
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
-    TaskManager taskManager = Managers.getDefault();
+    TaskManager taskManager;
+    HistoryManager historyManager;
+
+    @BeforeEach
+    void setUp() {
+        historyManager = Managers.getDefaultHistory();
+        taskManager = Managers.getDefault();
+    }
 
     @Test
     void addTask() {
@@ -110,9 +119,11 @@ class InMemoryTaskManagerTest {
     void deleteTaskById() {
         Task task1 = new Task("Test1 addNewTask", "Test1 addNewTask description");
         taskManager.addTask(task1);
+        taskManager.getTaskById(task1.getId());
         taskManager.deleteTaskById(task1.getId());
 
         assertEquals(0, taskManager.getTasks().size());
+        assertEquals(0, historyManager.getHistory().size());
     }
 
 
@@ -122,9 +133,12 @@ class InMemoryTaskManagerTest {
         Task task2 = new Task("Test2 addNewTask", "Test2 addNewTask description");
         taskManager.addTask(task1);
         taskManager.addTask(task2);
+        taskManager.getTaskById(task1.getId());
+        taskManager.getTaskById(task2.getId());
         taskManager.deleteTasks();
 
         assertEquals(0, taskManager.getTasks().size());
+        assertEquals(0, historyManager.getHistory().size());
     }
 
     @Test
@@ -169,10 +183,12 @@ class InMemoryTaskManagerTest {
         Subtask subtask1 = new Subtask("Test2 addNewSubtask", "Test2 addNewSubtask description", 1);
         taskManager.addEpic(epic1);
         taskManager.addSubtask(subtask1);
+        taskManager.getEpicById(epic1.getId());
         taskManager.deleteEpicById(epic1.getId());
 
         assertEquals(0, taskManager.getEpics().size());
         assertEquals(0, taskManager.getSubtasksByEpic(epic1.getId()).size());
+        assertEquals(0, historyManager.getHistory().size());
     }
 
 
@@ -186,10 +202,13 @@ class InMemoryTaskManagerTest {
         taskManager.addEpic(epic2);
         taskManager.addSubtask(subtask1);
         taskManager.addSubtask(subtask2);
+        taskManager.getEpicById(epic1.getId());
+        taskManager.getSubtaskById(subtask1.getId());
         taskManager.deleteEpics();
 
         assertEquals(0, taskManager.getEpics().size());
         assertEquals(0, taskManager.getSubtasks().size());
+        assertEquals(0, historyManager.getHistory().size());
     }
 
     @Test
@@ -239,9 +258,12 @@ class InMemoryTaskManagerTest {
         Subtask subtask1 = new Subtask("Test2 addNewSubtask", "Test2 addNewSubtask description", 1);
         taskManager.addEpic(epic1);
         taskManager.addSubtask(subtask1);
+        taskManager.getSubtaskById(subtask1.getId());
         taskManager.deleteSubtaskById(subtask1.getId());
 
         assertEquals(0, taskManager.getSubtasks().size());
+        assertEquals(0, historyManager.getHistory().size());
+        assertFalse(epic1.getSubtasks().containsKey(subtask1.getId()));
     }
 
 
@@ -253,8 +275,11 @@ class InMemoryTaskManagerTest {
         taskManager.addEpic(epic1);
         taskManager.addSubtask(subtask1);
         taskManager.addSubtask(subtask2);
+        taskManager.getSubtaskById(subtask1.getId());
+        taskManager.getSubtaskById(subtask2.getId());
         taskManager.deleteSubtasks();
 
         assertEquals(0, taskManager.getSubtasks().size());
+        assertEquals(0, historyManager.getHistory().size());
     }
 }

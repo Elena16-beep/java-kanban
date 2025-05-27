@@ -4,7 +4,6 @@ import model.Epic;
 import model.Status;
 import model.Subtask;
 import model.Task;
-
 import java.util.HashMap;
 import java.util.List;
 
@@ -68,11 +67,25 @@ public class InMemoryTaskManager implements TaskManager {
         Status status;
         int newCount = 0, inProgressCount = 0, doneCount = 0;
 
+//        for (Subtask subtasks : epic.getSubtasks().values()) {
+//            switch (subtasks.getStatus()) {
+//                case NEW -> newCount++;
+//                case IN_PROGRESS -> inProgressCount++;
+//                case DONE -> doneCount++;
+//            }
+//        }
+
         for (Subtask subtasks : epic.getSubtasks().values()) {
             switch (subtasks.getStatus()) {
-                case NEW -> newCount++;
-                case IN_PROGRESS -> inProgressCount++;
-                case DONE -> doneCount++;
+                case NEW:
+                    newCount++;
+                    break;
+                case IN_PROGRESS:
+                    inProgressCount++;
+                    break;
+                case DONE:
+                    doneCount++;
+                    break;
             }
         }
 

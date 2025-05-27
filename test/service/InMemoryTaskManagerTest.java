@@ -1,4 +1,4 @@
-package tests.service;
+package service;
 
 import model.Epic;
 import model.Status;
@@ -6,12 +6,7 @@ import model.Subtask;
 import model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.HistoryManager;
-import service.Managers;
-import service.TaskManager;
-
 import java.util.HashMap;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {

@@ -1,4 +1,4 @@
-package test.model;
+package tests.model;
 
 import model.Epic;
 import model.Status;

@@ -1,4 +1,4 @@
-package test;
+package test.service;
 
 import org.junit.jupiter.api.Test;
 import service.HistoryManager;

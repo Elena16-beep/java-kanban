@@ -3,7 +3,7 @@ package model;
 import java.util.HashMap;
 
 public class Epic extends Task {
-    private HashMap <Integer, Subtask> subtasks;
+    private HashMap<Integer, Subtask> subtasks;
 
     public Epic(String name, String description) {
         this.name = name;

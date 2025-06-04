@@ -38,4 +38,8 @@ public class Epic extends Task {
     public HashMap<Integer, Subtask> getSubtasks() {
         return subtasks;
     }
+
+    public Type getType() {
+        return Type.EPIC;
+    }
 }

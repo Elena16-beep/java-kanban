@@ -8,16 +8,17 @@ import java.util.HashMap;
 import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
-    private int count = 0;
-    private HashMap<Integer, Task> tasks;
-    private HashMap<Integer, Subtask> subtasks;
-    private HashMap<Integer, Epic> epics;
-    private final HistoryManager historyManager = Managers.getDefaultHistory();
+    protected static int count = 0;
+    protected static HashMap<Integer, Task> tasks;
+    protected static HashMap<Integer, Subtask> subtasks;
+    protected static HashMap<Integer, Epic> epics;
+    protected final HistoryManager historyManager;
 
     public InMemoryTaskManager() {
         tasks = new HashMap<>();
         subtasks = new HashMap<>();
         epics = new HashMap<>();
+        historyManager = Managers.getDefaultHistory();
     }
 
     @Override
@@ -281,5 +282,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
+    }
+
+    @Override
+    public void setCurrentCount(int num) {
+        this.count = num;
     }
 }

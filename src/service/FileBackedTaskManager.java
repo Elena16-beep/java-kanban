@@ -1,0 +1,172 @@
+package service;
+
+import model.*;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+
+public class FileBackedTaskManager extends InMemoryTaskManager {
+    private final File filename;
+
+    public FileBackedTaskManager(File filename) {
+        this.filename = filename;
+    }
+
+    public void save() throws ManagerSaveException {
+        try (FileWriter writer = new FileWriter(filename, StandardCharsets.UTF_8)) {
+            writer.write("id,type,name,status,description,epic");
+            writer.write("\n");
+
+            for (Task task : getTasks().values()) {
+                writer.write(toString(task));
+                writer.write("\n");
+            }
+
+            for (Epic epic : getEpics().values()) {
+                writer.write(toString(epic));
+                writer.write("\n");
+            }
+
+            for (Subtask subtask : getSubtasks().values()) {
+                writer.write(toString(subtask));
+                writer.write("\n");
+            }
+        } catch (IOException e) {
+            throw new ManagerSaveException("Произошла ошибка во время сохранения файла: " + e.getMessage());
+        }
+    }
+
+    public String toString(Task task) {
+        String epicId = "";
+        String comma = "";
+
+        if (task instanceof Subtask) {
+            epicId = String.valueOf(((Subtask) task).getIdEpic());
+            comma = ",";
+        }
+
+        return String.format("%d,%s,%s,%s,%s" + comma + "%s", task.getId(), task.getType(), task.getName(), task.getStatus(), task.getDescription(), epicId);
+    }
+
+    public Task fromString(String value) {
+        Task task = new Task();
+        String[] items = value.split(",");
+        int id = Integer.parseInt(items[0]);
+        Type type = Type.valueOf(items[1]);
+        String name = items[2];
+        Status status = Status.valueOf(items[3]);
+        String description = items[4];
+
+        switch (type) {
+            case TASK -> task = new Task(id, name, description, status);
+            case EPIC -> task = (Epic) new Epic(id, name, description, status);
+            case SUBTASK -> task = new Subtask(id, name, description, status, Integer.parseInt(items[5]));
+        }
+
+        return task;
+    }
+
+    public static FileBackedTaskManager loadFromFile(File file) {
+        FileBackedTaskManager fileBackedTasksManager = new FileBackedTaskManager(file);
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
+            String line;
+            while (reader.ready()) {
+                line = reader.readLine();
+                line = line.trim();
+                if (!line.isEmpty() && !line.equals("id,type,name,status,description,epic")) {
+                    switch (fileBackedTasksManager.fromString(line).getType()) {
+                        case TASK:
+                            tasks.put(fileBackedTasksManager.fromString(line).getId(), fileBackedTasksManager.fromString(line));
+                            break;
+                        case EPIC:
+                            epics.put(fileBackedTasksManager.fromString(line).getId(), (Epic) fileBackedTasksManager.fromString(line));
+                            break;
+                        case SUBTASK:
+                            subtasks.put(fileBackedTasksManager.fromString(line).getId(), (Subtask) fileBackedTasksManager.fromString(line));
+                    }
+
+                    if (fileBackedTasksManager.fromString(line).getId() >= count) {
+                        count = fileBackedTasksManager.fromString(line).getId();
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new ManagerSaveException("Произошла ошибка во время загрузки из файла: " + e.getMessage());
+        }
+
+        return fileBackedTasksManager;
+    }
+
+    @Override
+    public void addTask(Task task) {
+        super.addTask(task);
+        save();
+    }
+
+    @Override
+    public void updateTask(Task task, String name, String description, Status status) {
+        super.updateTask(task, name, description, status);
+        save();
+    }
+
+    @Override
+    public void addEpic(Epic epic) {
+        super.addEpic(epic);
+        save();
+    }
+
+    @Override
+    public void updateEpic(Epic epic, String name, String description) {
+        super.updateEpic(epic, name, description);
+        save();
+    }
+
+    @Override
+    public void addSubtask(Subtask subtask) {
+        super.addSubtask(subtask);
+        save();
+    }
+
+    @Override
+    public void updateSubtask(Subtask subtask, String name, String description, Status status) {
+        super.updateSubtask(subtask, name, description, status);
+        save();
+    }
+
+    @Override
+    public void deleteTasks() {
+        super.deleteTasks();
+        save();
+    }
+
+    @Override
+    public void deleteEpics() {
+        super.deleteEpics();
+        save();
+    }
+
+    @Override
+    public void deleteSubtasks() {
+        super.deleteSubtasks();
+        save();
+    }
+
+    @Override
+    public void deleteTaskById(int id) {
+        super.deleteTaskById(id);
+        save();
+    }
+
+    @Override
+    public void deleteEpicById(int id) {
+        super.deleteEpicById(id);
+        save();
+    }
+
+    @Override
+    public void deleteSubtaskById(int id) {
+        super.deleteSubtaskById(id);
+        save();
+    }
+}

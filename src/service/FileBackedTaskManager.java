@@ -1,9 +1,19 @@
 package service;
 
-import model.*;
-
-import java.io.*;
+import model.Epic;
+import model.Subtask;
+import model.Task;
+import model.Type;
+import model.Status;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File filename;
@@ -59,7 +69,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         switch (type) {
             case TASK -> task = new Task(id, name, description, status);
-            case EPIC -> task = (Epic) new Epic(id, name, description, status);
+            case EPIC -> task = new Epic(id, name, description, status);
             case SUBTASK -> task = new Subtask(id, name, description, status, Integer.parseInt(items[5]));
         }
 
@@ -83,7 +93,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                             epics.put(fileBackedTasksManager.fromString(line).getId(), (Epic) fileBackedTasksManager.fromString(line));
                             break;
                         case SUBTASK:
-                            subtasks.put(fileBackedTasksManager.fromString(line).getId(), (Subtask) fileBackedTasksManager.fromString(line));
+                            Subtask subtask = (Subtask) fileBackedTasksManager.fromString(line);
+
+                            subtasks.put(fileBackedTasksManager.fromString(line).getId(), subtask);
+
+                            if (epics.get(subtask.getIdEpic()) != null) {
+                                epics.get(subtask.getIdEpic()).getSubtasks().put(subtask.getId(), subtask);
+                            }
+
+                            break;
                     }
 
                     if (fileBackedTasksManager.fromString(line).getId() >= count) {
@@ -96,6 +114,83 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
 
         return fileBackedTasksManager;
+    }
+
+    public static void main(String[] args) {
+        FileBackedTaskManager fileBackedTaskManager;
+        Path pathFile = Paths.get("src/files/tasksFile.csv");
+        File tasksFile;
+
+        if (!Files.exists(pathFile)) {
+            try {
+                tasksFile = Files.createFile(pathFile).toFile();
+            } catch (IOException e) {
+                throw new ManagerSaveException("Произошла ошибка во время создания файла tasksFile.csv: " + e.getMessage());
+            }
+        } else {
+            tasksFile = new File(String.valueOf(pathFile));
+        }
+
+        if (Files.exists(pathFile) && tasksFile.length() == 0) {
+            fileBackedTaskManager = new FileBackedTaskManager(tasksFile);
+        } else {
+            fileBackedTaskManager = FileBackedTaskManager.loadFromFile(tasksFile);
+        }
+
+        Task task1 = new Task("Test1 addNewTask", "Test1 addNewTask description");
+        fileBackedTaskManager.addTask(task1);
+        Task task2 = new Task("Test2 addNewTask", "Test2 addNewTask description");
+        fileBackedTaskManager.addTask(task2);
+
+        Epic epic1 = new Epic("Test3 addNewEpic", "Test3 addNewEpic description");
+        fileBackedTaskManager.addEpic(epic1);
+        Subtask subtask1 = new Subtask("Test4 addNewSubtask", "Test4 addNewSubtask description", 3);
+        fileBackedTaskManager.addSubtask(subtask1);
+        Subtask subtask2 = new Subtask("Test5 addNewSubtask", "Test5 addNewSubtask description", 3);
+        fileBackedTaskManager.addSubtask(subtask2);
+
+        fileBackedTaskManager.updateTask(task1, "", "", Status.DONE);
+        fileBackedTaskManager.updateTask(task2, "", "", Status.IN_PROGRESS);
+        fileBackedTaskManager.updateSubtask(subtask1, "", "", Status.IN_PROGRESS);
+        fileBackedTaskManager.updateSubtask(subtask2, "", "", Status.DONE);
+
+        System.out.println("Задачи:");
+
+        for (int task : fileBackedTaskManager.getTasks().keySet()) {
+            System.out.println(fileBackedTaskManager.getTasks().get(task));
+        }
+
+        System.out.println("Эпики:");
+
+        for (int task : fileBackedTaskManager.getEpics().keySet()) {
+            System.out.println(fileBackedTaskManager.getEpics().get(task));
+        }
+
+        System.out.println("Подзадачи:");
+
+        for (int task : fileBackedTaskManager.getSubtasks().keySet()) {
+            System.out.println(fileBackedTaskManager.getSubtasks().get(task));
+        }
+
+        FileBackedTaskManager fileBackedTaskManagerLoaded = FileBackedTaskManager.loadFromFile(tasksFile);
+
+        System.out.println("Задачи:");
+
+        for (int task : fileBackedTaskManagerLoaded.getTasks().keySet()) {
+            System.out.println(fileBackedTaskManagerLoaded.getTasks().get(task));
+        }
+
+        System.out.println("Эпики:");
+
+        for (int task : fileBackedTaskManagerLoaded.getEpics().keySet()) {
+            System.out.println(fileBackedTaskManagerLoaded.getEpics().get(task));
+        }
+
+        System.out.println("Подзадачи:");
+
+        for (int task : fileBackedTaskManagerLoaded.getSubtasks().keySet()) {
+            System.out.println(fileBackedTaskManagerLoaded.getSubtasks().get(task));
+        }
     }
 
     @Override

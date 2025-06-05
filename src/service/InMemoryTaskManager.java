@@ -286,6 +286,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void setCurrentCount(int num) {
-        this.count = num;
+        count = num;
     }
 }

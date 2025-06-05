@@ -23,7 +23,7 @@ class FileBackedTaskManagerTest {
     @BeforeEach
     void setUp() throws ManagerSaveException {
         try {
-            temp = Files.createTempFile("ttt", ".scv");
+            temp = Files.createTempFile("ttt", ".csv");
             fileBackedTaskManager = new FileBackedTaskManager(new File(String.valueOf(temp)));
             fileBackedTaskManager.setCurrentCount(0);
         } catch (IOException e) {
@@ -43,6 +43,7 @@ class FileBackedTaskManagerTest {
             while (reader.ready()) {
                 line = reader.readLine();
                 line = line.trim();
+
                 if (!line.isEmpty()) {
                     lines.add(line);
                 }
@@ -83,6 +84,7 @@ class FileBackedTaskManagerTest {
             while (reader.ready()) {
                 line = reader.readLine();
                 line = line.trim();
+
                 if (!line.isEmpty()) {
                     lines.add(line);
                 }

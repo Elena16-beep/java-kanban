@@ -81,21 +81,25 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
             String line;
+
             while (reader.ready()) {
                 line = reader.readLine();
                 line = line.trim();
+
                 if (!line.isEmpty() && !line.equals("id,type,name,status,description,epic")) {
-                    switch (fileBackedTasksManager.fromString(line).getType()) {
+                    Task task = fileBackedTasksManager.fromString(line);
+
+                    switch (task.getType()) {
                         case TASK:
-                            tasks.put(fileBackedTasksManager.fromString(line).getId(), fileBackedTasksManager.fromString(line));
+                            tasks.put(task.getId(), task);
                             break;
                         case EPIC:
-                            epics.put(fileBackedTasksManager.fromString(line).getId(), (Epic) fileBackedTasksManager.fromString(line));
+                            epics.put(task.getId(), (Epic) task);
                             break;
                         case SUBTASK:
-                            Subtask subtask = (Subtask) fileBackedTasksManager.fromString(line);
+                            Subtask subtask = (Subtask) task;
 
-                            subtasks.put(fileBackedTasksManager.fromString(line).getId(), subtask);
+                            subtasks.put(subtask.getId(), subtask);
 
                             if (epics.get(subtask.getIdEpic()) != null) {
                                 epics.get(subtask.getIdEpic()).getSubtasks().put(subtask.getId(), subtask);
@@ -104,8 +108,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                             break;
                     }
 
-                    if (fileBackedTasksManager.fromString(line).getId() >= count) {
-                        count = fileBackedTasksManager.fromString(line).getId();
+                    if (task.getId() >= count) {
+                        count = task.getId();
                     }
                 }
             }

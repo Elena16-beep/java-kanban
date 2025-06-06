@@ -1,12 +1,19 @@
 package service;
 
 import model.Task;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
-    TaskManager taskManager = Managers.getDefault();
-    HistoryManager historyManager = Managers.getDefaultHistory();
+    TaskManager taskManager;
+    HistoryManager historyManager;
+
+    @BeforeEach
+    void setUp() {
+        taskManager = Managers.getDefault();
+        historyManager = Managers.getDefaultHistory();
+    }
 
     @Test
     void addTaskToHistory() {
@@ -28,7 +35,7 @@ class InMemoryHistoryManagerTest {
         Task task = new Task("Test addNewTask", "Test addNewTask description");
         taskManager.addTask(task);
         taskManager.getTaskById(task.getId());
-        taskManager.deleteTasks(); // Проверяем, что при удалении задачи, она удалиться из истории просмотров
+        taskManager.deleteTasks(); // Проверяем, что при удалении задачи, она удалится из истории просмотров
 
         assertEquals(0, historyManager.getHistory().size());
     }

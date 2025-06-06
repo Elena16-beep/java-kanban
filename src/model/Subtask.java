@@ -28,4 +28,8 @@ public class Subtask extends Task {
     public int getIdEpic() {
         return idEpic;
     }
+
+    public Type getType() {
+        return Type.SUBTASK;
+    }
 }

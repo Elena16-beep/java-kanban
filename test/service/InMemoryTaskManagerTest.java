@@ -17,6 +17,7 @@ class InMemoryTaskManagerTest {
     void setUp() {
         historyManager = Managers.getDefaultHistory();
         taskManager = Managers.getDefault();
+        taskManager.setCurrentCount(0);
     }
 
     @Test

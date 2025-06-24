@@ -6,12 +6,16 @@ import model.Subtask;
 import model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
     TaskManager taskManager;
     HistoryManager historyManager;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     @BeforeEach
     void setUp() {
@@ -22,7 +26,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void addTask() {
-        Task task = new Task("Test addNewTask", "Test addNewTask description");
+        Task task = new Task("Test addNewTask", "Test addNewTask description", Duration.ofMinutes(120), LocalDateTime.parse("01.01.2025 00:00", formatter));
         taskManager.addTask(task);
         final int taskId = task.getId();
 
@@ -36,6 +40,9 @@ class InMemoryTaskManagerTest {
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");
         assertEquals(task, tasks.get(1), "Задачи не совпадают.");
+
+        Task task2 = new Task("Test2 addNewTask", "Test2 addNewTask description", Duration.ofMinutes(5), LocalDateTime.parse("01.01.2025 01:58", formatter));
+        assertThrows(IllegalArgumentException.class, () -> taskManager.addTask(task2), "Пересечение задач должно приводить к исключению");
     }
 
     @Test
@@ -84,7 +91,7 @@ class InMemoryTaskManagerTest {
         Task task1 = new Task("Test addNewTask", "Test addNewTask description");
         taskManager.addTask(task1);
         Task task2 = new Task(task1.getId(), "Test updateTask", "Test updateTask description", Status.IN_PROGRESS);
-        taskManager.updateTask(task1, "Test updateTask", "Test updateTask description", Status.IN_PROGRESS);
+        taskManager.updateTask(task1, "Test updateTask", "Test updateTask description", Status.IN_PROGRESS, Duration.ofMinutes(20), LocalDateTime.parse("02.01.2025 00:00", formatter));
 
         assertEquals(1, taskManager.getTasks().size());
         assertEquals(task2, taskManager.getTaskById(task1.getId()));
@@ -143,13 +150,15 @@ class InMemoryTaskManagerTest {
         taskManager.addEpic(epic1);
         Subtask subtask = new Subtask("Test2 addNewSubtask", "Test2 addNewSubtask description", 1);
         taskManager.addSubtask(subtask);
-        taskManager.updateSubtask(subtask, "Test updateSubtask", "Test updateSubtask description", Status.IN_PROGRESS);
+        taskManager.updateSubtask(subtask, "Test updateSubtask", "Test updateSubtask description", Status.IN_PROGRESS, Duration.ofMinutes(30), LocalDateTime.parse("03.01.2025 00:00", formatter));
         Epic epic2 = new Epic(epic1.getId(), "Test3 addNewEpic", "Test3 addNewEpic description", Status.NEW);
         taskManager.updateEpic(epic2, "Test updateTask", "Test updateTask description");
 
         assertEquals(1, taskManager.getEpics().size());
         assertEquals(epic2, taskManager.getEpicById(epic1.getId()));
         assertEquals(Status.IN_PROGRESS, taskManager.getEpicById(epic1.getId()).getStatus());
+        assertEquals(subtask.getStartTime(), taskManager.getEpicById(epic1.getId()).getStartTime());
+        assertEquals(subtask.getDuration(), taskManager.getEpicById(epic1.getId()).getDuration());
     }
 
     @Test
@@ -214,7 +223,7 @@ class InMemoryTaskManagerTest {
         taskManager.addEpic(epic1);
         taskManager.addSubtask(subtask1);
         Task subtask2 = new Subtask(subtask1.getId(), "Test updateSubtask", "Test updateSubtask description", Status.DONE, 1);
-        taskManager.updateSubtask(subtask1, "Test updateSubtask", "Test updateSubtask description", Status.IN_PROGRESS);
+        taskManager.updateSubtask(subtask1, "Test updateSubtask", "Test updateSubtask description", Status.IN_PROGRESS, Duration.ofMinutes(40), LocalDateTime.parse("04.01.2025 00:00", formatter));
 
         assertEquals(1, taskManager.getEpics().size());
         assertEquals(1, taskManager.getSubtasks().size());

@@ -171,8 +171,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                             }
 
                             break;
-                        default:
-                        {
+                        default: {
                             throw new IllegalStateException("Неизвестный тип задачи: " + task.getType());
                         }
                     }

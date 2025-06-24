@@ -52,7 +52,7 @@ public class Main {
             System.out.print(fileBackedTaskManager.getEpics().get(task));
         }
 
-        fileBackedTaskManager.updateTask(task1, "", "", Status.DONE, Duration.ofMinutes(12) , LocalDateTime.parse("01.04.2025 17:12", formatter));
+        fileBackedTaskManager.updateTask(task1, "", "", Status.DONE, Duration.ofMinutes(12), LocalDateTime.parse("01.04.2025 17:12", formatter));
         fileBackedTaskManager.updateTask(task2, "", "", Status.IN_PROGRESS, Duration.ofMinutes(11), LocalDateTime.parse("01.04.2025 17:00", formatter));
 //        fileBackedTaskManager.updateSubtask(subtask1, "", "", Status.IN_PROGRESS);
 //        fileBackedTaskManager.updateSubtask(subtask2, "", "", Status.NEW);

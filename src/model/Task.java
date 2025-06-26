@@ -1,5 +1,8 @@
 package model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Task {
@@ -7,6 +10,10 @@ public class Task {
     protected String description;
     protected int id;
     protected Status status;
+    // Sprint8
+    protected Duration duration;
+    protected LocalDateTime startTime;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public Task(String name, String description) {
         this.name = name;
@@ -21,6 +28,23 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = status;
+    }
+
+    // Sprint8
+    public Task(String name, String description, Duration duration, LocalDateTime startTime) {
+        this.name = name;
+        this.description = description;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
+
+    public Task(Integer id, String name, String description, Status status, Duration duration, LocalDateTime startTime) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.duration = duration;
+        this.startTime = startTime;
     }
 
     @Override
@@ -53,10 +77,33 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Задача " + id +
+        String str = "Задача " + id +
                 ": название: " + name +
                 ", описание: " + description +
                 ", статус: " + status;
+
+        if (duration != null) {
+            str = str +
+                    "," + '\n' + "     " + "продолжительность задачи: " +
+                    duration.toMinutes() +
+                    " минут";
+        }
+
+        if (startTime != null) {
+            str = str +
+                    "," + '\n' + "     " + "дата и время, когда предполагается приступить к выполнению задачи: " +
+                    startTime.format(formatter);
+        }
+
+        if (getEndTime() != null) {
+            str = str +
+                    "," + '\n' + "     " + "дата и время завершения задачи: " +
+                    getEndTime().format(formatter);
+        }
+
+        str = str + '\n';
+
+        return str;
     }
 
     public void setName(String name) {
@@ -77,5 +124,30 @@ public class Task {
 
     public Type getType() {
         return Type.TASK;
+    }
+
+    // Sprint8
+    public LocalDateTime getEndTime() {
+        if (startTime != null && duration != null) {
+            return startTime.plus(duration);
+        } else {
+            return null;
+        }
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
     }
 }

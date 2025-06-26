@@ -4,13 +4,16 @@ import model.Epic;
 import model.Status;
 import model.Subtask;
 import model.Task;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 public interface TaskManager {
     void addTask(Task task);
 
-    void updateTask(Task task, String name, String description, Status status);
+    void updateTask(Task task, String name, String description, Status status, Duration duration, LocalDateTime startTime);
 
     void addEpic(Epic epic);
 
@@ -20,7 +23,7 @@ public interface TaskManager {
 
     void addSubtask(Subtask subtask);
 
-    void updateSubtask(Subtask subtask, String name, String description, Status status);
+    void updateSubtask(Subtask subtask, String name, String description, Status status, Duration duration, LocalDateTime startTime);
 
     int generateId();
 
@@ -30,11 +33,11 @@ public interface TaskManager {
 
     HashMap<Integer, Subtask> getSubtasks();
 
-    Task getTaskById(int id);
+    Optional<Task> getTaskById(int id);
 
-    Epic getEpicById(int id);
+    Optional<Epic> getEpicById(int id);
 
-    Subtask getSubtaskById(int id);
+    Optional<Subtask> getSubtaskById(int id);
 
     HashMap<Integer, Subtask> getSubtasksByEpic(int id);
 

@@ -8,6 +8,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 public interface TaskManager {
     void addTask(Task task);
@@ -32,11 +33,11 @@ public interface TaskManager {
 
     HashMap<Integer, Subtask> getSubtasks();
 
-    Task getTaskById(int id);
+    Optional<Task> getTaskById(int id);
 
-    Epic getEpicById(int id);
+    Optional<Epic> getEpicById(int id);
 
-    Subtask getSubtaskById(int id);
+    Optional<Subtask> getSubtaskById(int id);
 
     HashMap<Integer, Subtask> getSubtasksByEpic(int id);
 

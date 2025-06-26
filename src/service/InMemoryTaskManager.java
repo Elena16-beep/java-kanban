@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.time.Duration;
@@ -193,42 +194,36 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getTaskById(int id) {
+    public Optional<Task> getTaskById(int id) {
         if (tasks.containsKey(id)) {
             historyManager.add(tasks.get(id));
-
-            return tasks.get(id);
         } else {
             System.out.println("Задача " + id + " не найдена.");
-
-            return null;
         }
+
+        return Optional.ofNullable(tasks.get(id));
     }
 
     @Override
-    public Epic getEpicById(int id) {
+    public Optional<Epic> getEpicById(int id) {
         if (epics.containsKey(id)) {
             historyManager.add(epics.get(id));
-
-            return epics.get(id);
         } else {
             System.out.println("Эпик " + id + " не найден.");
-
-            return null;
         }
+
+        return Optional.ofNullable(epics.get(id));
     }
 
     @Override
-    public Subtask getSubtaskById(int id) {
+    public Optional<Subtask> getSubtaskById(int id) {
         if (subtasks.containsKey(id)) {
             historyManager.add(subtasks.get(id));
-
-            return subtasks.get(id);
         } else {
             System.out.println("Подзадача " + id + " не найдена.");
-
-            return null;
         }
+
+        return Optional.ofNullable(subtasks.get(id));
     }
 
     @Override

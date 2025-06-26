@@ -30,7 +30,9 @@ class InMemoryTaskManagerTest {
         taskManager.addTask(task);
         final int taskId = task.getId();
 
-        final Task savedTask = taskManager.getTaskById(taskId);
+        assertTrue(taskManager.getTaskById(taskId).isPresent());
+
+        final Task savedTask = taskManager.getTaskById(taskId).get();
 
         assertNotNull(savedTask, "Задача не найдена.");
         assertEquals(task, savedTask, "Задачи не совпадают.");
@@ -77,12 +79,14 @@ class InMemoryTaskManagerTest {
 
         final HashMap<Integer, Task> tasks = taskManager.getTasks();
 
+        assertTrue(taskManager.getTaskById(task1.getId()).isPresent());
+        assertTrue(taskManager.getTaskById(task2.getId()).isPresent());
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(2, tasks.size());
-        assertNotEquals(taskManager.getTaskById(task1.getId()), taskManager.getTaskById(task2.getId()), "Задачи с заданным id и сгенерированным id конфликтуют");
-        assertEquals("Test addNewTask", taskManager.getTaskById(task2.getId()).getName(), "Наименование не должно измениться");
-        assertEquals("Test addNewTask description", taskManager.getTaskById(task2.getId()).getDescription(), "Описание не должно измениться");
-        assertEquals(Status.NEW, taskManager.getTaskById(task2.getId()).getStatus(), "Статус добавленной задачи должен быть new");
+        assertNotEquals(taskManager.getTaskById(task1.getId()).get(), taskManager.getTaskById(task2.getId()).get(), "Задачи с заданным id и сгенерированным id конфликтуют");
+        assertEquals("Test addNewTask", taskManager.getTaskById(task2.getId()).get().getName(), "Наименование не должно измениться");
+        assertEquals("Test addNewTask description", taskManager.getTaskById(task2.getId()).get().getDescription(), "Описание не должно измениться");
+        assertEquals(Status.NEW, taskManager.getTaskById(task2.getId()).get().getStatus(), "Статус добавленной задачи должен быть new");
         assertEquals(2, task2.getId());
     }
 
@@ -94,7 +98,8 @@ class InMemoryTaskManagerTest {
         taskManager.updateTask(task1, "Test updateTask", "Test updateTask description", Status.IN_PROGRESS, Duration.ofMinutes(20), LocalDateTime.parse("02.01.2025 00:00", formatter));
 
         assertEquals(1, taskManager.getTasks().size());
-        assertEquals(task2, taskManager.getTaskById(task1.getId()));
+        assertTrue(taskManager.getTaskById(task1.getId()).isPresent());
+        assertEquals(task2, taskManager.getTaskById(task1.getId()).get());
     }
 
     @Test
@@ -103,7 +108,8 @@ class InMemoryTaskManagerTest {
         taskManager.addTask(task1);
 
         assertEquals(1, taskManager.getTasks().size());
-        assertEquals(task1, taskManager.getTaskById(task1.getId()));
+        assertTrue(taskManager.getTaskById(task1.getId()).isPresent());
+        assertEquals(task1, taskManager.getTaskById(task1.getId()).get());
     }
 
     @Test
@@ -128,7 +134,6 @@ class InMemoryTaskManagerTest {
         assertEquals(0, taskManager.getTasks().size());
         assertEquals(0, historyManager.getHistory().size());
     }
-
 
     @Test
     void deleteTasks() {
@@ -155,10 +160,11 @@ class InMemoryTaskManagerTest {
         taskManager.updateEpic(epic2, "Test updateTask", "Test updateTask description");
 
         assertEquals(1, taskManager.getEpics().size());
-        assertEquals(epic2, taskManager.getEpicById(epic1.getId()));
-        assertEquals(Status.IN_PROGRESS, taskManager.getEpicById(epic1.getId()).getStatus());
-        assertEquals(subtask.getStartTime(), taskManager.getEpicById(epic1.getId()).getStartTime());
-        assertEquals(subtask.getDuration(), taskManager.getEpicById(epic1.getId()).getDuration());
+        assertTrue(taskManager.getEpicById(epic1.getId()).isPresent());
+        assertEquals(epic2, taskManager.getEpicById(epic1.getId()).get());
+        assertEquals(Status.IN_PROGRESS, taskManager.getEpicById(epic1.getId()).get().getStatus());
+        assertEquals(subtask.getStartTime(), taskManager.getEpicById(epic1.getId()).get().getStartTime());
+        assertEquals(subtask.getDuration(), taskManager.getEpicById(epic1.getId()).get().getDuration());
     }
 
     @Test
@@ -167,7 +173,8 @@ class InMemoryTaskManagerTest {
         taskManager.addEpic(epic1);
 
         assertEquals(1, taskManager.getEpics().size());
-        assertEquals(epic1, taskManager.getEpicById(epic1.getId()));
+        assertTrue(taskManager.getEpicById(epic1.getId()).isPresent());
+        assertEquals(epic1, taskManager.getEpicById(epic1.getId()).get());
     }
 
     @Test
@@ -195,7 +202,6 @@ class InMemoryTaskManagerTest {
         assertEquals(0, taskManager.getSubtasksByEpic(epic1.getId()).size());
         assertEquals(0, historyManager.getHistory().size());
     }
-
 
     @Test
     void deleteEpics() {
@@ -227,7 +233,8 @@ class InMemoryTaskManagerTest {
 
         assertEquals(1, taskManager.getEpics().size());
         assertEquals(1, taskManager.getSubtasks().size());
-        assertEquals(subtask2, taskManager.getSubtaskById(subtask1.getId()));
+        assertTrue(taskManager.getSubtaskById(subtask1.getId()).isPresent());
+        assertEquals(subtask2, taskManager.getSubtaskById(subtask1.getId()).get());
     }
 
     @Test
@@ -239,7 +246,8 @@ class InMemoryTaskManagerTest {
 
         assertEquals(1, taskManager.getEpics().size());
         assertEquals(1, taskManager.getSubtasks().size());
-        assertEquals(subtask1, taskManager.getSubtaskById(subtask1.getId()));
+        assertTrue(taskManager.getSubtaskById(subtask1.getId()).isPresent());
+        assertEquals(subtask1, taskManager.getSubtaskById(subtask1.getId()).get());
     }
 
     @Test
@@ -271,7 +279,6 @@ class InMemoryTaskManagerTest {
         assertFalse(epic1.getSubtasks().containsKey(subtask1.getId()));
     }
 
-
     @Test
     void deleteSubtasks() {
         Epic epic1 = new Epic("Test1 addNewEpic", "Test1 addNewEpic description");
@@ -286,5 +293,35 @@ class InMemoryTaskManagerTest {
 
         assertEquals(0, taskManager.getSubtasks().size());
         assertEquals(0, historyManager.getHistory().size());
+    }
+
+    @Test
+    void updateEpicStatusAndDateTime() {
+        Epic epic1 = new Epic("Test1 addNewEpic", "Test1 addNewEpic description");
+        taskManager.addEpic(epic1);
+        Subtask subtask1 = new Subtask("Test2 addNewSubtask", "Test2 addNewSubtask description", 1);
+        Subtask subtask2 = new Subtask("Test3 addNewSubtask", "Test3 addNewSubtask description", 1);
+        Subtask subtask3 = new Subtask("Test4 addNewSubtask", "Test4 addNewSubtask description", 1);
+        taskManager.addSubtask(subtask1);
+        taskManager.addSubtask(subtask2);
+        taskManager.addSubtask(subtask3);
+
+        assertTrue(taskManager.getEpicById(epic1.getId()).isPresent());
+        assertEquals(Status.NEW, taskManager.getEpicById(epic1.getId()).get().getStatus(), "Статус эпика должен быть new");
+
+        taskManager.updateSubtask(subtask1, "Test2 updateSubtask", "Test2 updateSubtask description", Status.DONE, null, null);
+        taskManager.updateSubtask(subtask2, "Test3 updateSubtask", "Test3 updateSubtask description", Status.DONE, null, null);
+        taskManager.updateSubtask(subtask3, "Test4 updateSubtask", "Test4 updateSubtask description", Status.DONE, null, null);
+        assertEquals(Status.DONE, taskManager.getEpicById(epic1.getId()).get().getStatus(), "Статус эпика должен быть done");
+
+        taskManager.updateSubtask(subtask2, "", "", Status.NEW, Duration.ofMinutes(1), LocalDateTime.parse("01.01.2025 01:00", formatter));
+        assertEquals(Status.IN_PROGRESS, taskManager.getEpicById(epic1.getId()).get().getStatus(), "Статус эпика должен быть in progress");
+
+        taskManager.updateSubtask(subtask1, "", "", Status.IN_PROGRESS, Duration.ofMinutes(2), LocalDateTime.parse("01.01.2025 02:00", formatter));
+        taskManager.updateSubtask(subtask3, "", "", Status.IN_PROGRESS, Duration.ofMinutes(3), LocalDateTime.parse("01.01.2025 03:00", formatter));
+        assertEquals(Status.IN_PROGRESS, taskManager.getEpicById(epic1.getId()).get().getStatus(), "Статус эпика должен быть in progress");
+        assertEquals(subtask2.getStartTime(), taskManager.getEpicById(epic1.getId()).get().getStartTime());
+        assertEquals(subtask3.getEndTime(), taskManager.getEpicById(epic1.getId()).get().getEndTime());
+        assertEquals(123, taskManager.getEpicById(epic1.getId()).get().getDuration().toMinutes());
     }
 }

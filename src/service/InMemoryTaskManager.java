@@ -184,13 +184,28 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
+    public List<Task> getTasksList() {
+        return new ArrayList<>(tasks.values());
+    }
+
+    @Override
     public HashMap<Integer, Epic> getEpics() {
         return epics;
     }
 
     @Override
+    public List<Epic> getEpicsList() {
+        return new ArrayList<>(epics.values());
+    }
+
+    @Override
     public HashMap<Integer, Subtask> getSubtasks() {
         return subtasks;
+    }
+
+    @Override
+    public List<Subtask> getSubtasksList() {
+        return new ArrayList<>(subtasks.values());
     }
 
     @Override

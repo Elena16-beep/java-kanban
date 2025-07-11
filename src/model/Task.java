@@ -13,7 +13,6 @@ public class Task {
     // Sprint8
     protected Duration duration;
     protected LocalDateTime startTime;
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public Task(String name, String description) {
         this.name = name;
@@ -34,6 +33,15 @@ public class Task {
     public Task(String name, String description, Duration duration, LocalDateTime startTime) {
         this.name = name;
         this.description = description;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
+
+    // Sprint9
+    public Task(String name, String description, Status status, Duration duration, LocalDateTime startTime) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
         this.duration = duration;
         this.startTime = startTime;
     }
@@ -92,13 +100,13 @@ public class Task {
         if (startTime != null) {
             str = str +
                     "," + '\n' + "     " + "дата и время, когда предполагается приступить к выполнению задачи: " +
-                    startTime.format(formatter);
+                    startTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
         }
 
         if (getEndTime() != null) {
             str = str +
                     "," + '\n' + "     " + "дата и время завершения задачи: " +
-                    getEndTime().format(formatter);
+                    getEndTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
         }
 
         str = str + '\n';

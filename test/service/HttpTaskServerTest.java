@@ -56,7 +56,7 @@ class HttpTaskServerTest {
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8081/tasks"))
+                .uri(URI.create("http://localhost:8080/tasks"))
                 .POST(HttpRequest.BodyPublishers.ofString(taskJson))
                 .build();
 
@@ -80,7 +80,7 @@ class HttpTaskServerTest {
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8081/tasks"))
+                .uri(URI.create("http://localhost:8080/tasks"))
                 .GET()
                 .build();
 
@@ -100,7 +100,7 @@ class HttpTaskServerTest {
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8081/tasks/10"))
+                .uri(URI.create("http://localhost:8080/tasks/10"))
                 .GET()
                 .build();
 
@@ -125,7 +125,7 @@ class HttpTaskServerTest {
         HttpClient httpClient = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8081/tasks/1"))
+                .uri(URI.create("http://localhost:8080/tasks/1"))
                 .POST(HttpRequest.BodyPublishers.ofString(postTask))
                 .build();
 
@@ -144,7 +144,7 @@ class HttpTaskServerTest {
 
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8081/tasks/11"))
+                .uri(URI.create("http://localhost:8080/tasks/11"))
                 .DELETE()
                 .build();
 
@@ -162,7 +162,7 @@ class HttpTaskServerTest {
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8081/epics"))
+                .uri(URI.create("http://localhost:8080/epics"))
                 .POST(HttpRequest.BodyPublishers.ofString(taskJson))
                 .build();
 
@@ -182,7 +182,7 @@ class HttpTaskServerTest {
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8081/epics"))
+                .uri(URI.create("http://localhost:8080/epics"))
                 .GET()
                 .build();
 
@@ -204,7 +204,7 @@ class HttpTaskServerTest {
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8081/subtasks"))
+                .uri(URI.create("http://localhost:8080/subtasks"))
                 .POST(HttpRequest.BodyPublishers.ofString(taskJson))
                 .build();
 
@@ -227,7 +227,7 @@ class HttpTaskServerTest {
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8081/subtasks"))
+                .uri(URI.create("http://localhost:8080/subtasks"))
                 .GET()
                 .build();
 
@@ -248,7 +248,7 @@ class HttpTaskServerTest {
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8081/history"))
+                .uri(URI.create("http://localhost:8080/history"))
                 .GET()
                 .build();
 
@@ -270,7 +270,7 @@ class HttpTaskServerTest {
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8081/prioritized"))
+                .uri(URI.create("http://localhost:8080/prioritized"))
                 .GET()
                 .build();
 

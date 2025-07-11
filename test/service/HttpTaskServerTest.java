@@ -100,7 +100,7 @@ class HttpTaskServerTest {
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/tasks/10"))
+                .uri(URI.create("http://localhost:8080/tasks/1"))
                 .GET()
                 .build();
 
@@ -144,7 +144,7 @@ class HttpTaskServerTest {
 
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/tasks/11"))
+                .uri(URI.create("http://localhost:8080/tasks/1"))
                 .DELETE()
                 .build();
 

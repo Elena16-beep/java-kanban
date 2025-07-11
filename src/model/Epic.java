@@ -2,6 +2,7 @@ package model;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 public class Epic extends Task {
@@ -46,11 +47,11 @@ public class Epic extends Task {
         }
 
         if (startTime != null) {
-            result.append(",").append('\n').append("     ").append("дата и время, когда предполагается приступить к выполнению: ").append(startTime.format(formatter));
+            result.append(",").append('\n').append("     ").append("дата и время, когда предполагается приступить к выполнению: ").append(startTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
         }
 
         if (getEndTime() != null) {
-            result.append(",").append('\n').append("     ").append("дата и время завершения: ").append(getEndTime().format(formatter));
+            result.append(",").append('\n').append("     ").append("дата и время завершения: ").append(getEndTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
         }
 
         result.append('\n');

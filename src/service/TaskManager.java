@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface TaskManager {
     void addTask(Task task);
@@ -29,9 +30,15 @@ public interface TaskManager {
 
     HashMap<Integer, Task> getTasks();
 
+    List<Task> getTasksList();
+
     HashMap<Integer, Epic> getEpics();
 
+    List<Epic> getEpicsList();
+
     HashMap<Integer, Subtask> getSubtasks();
+
+    List<Subtask> getSubtasksList();
 
     Optional<Task> getTaskById(int id);
 
@@ -54,6 +61,8 @@ public interface TaskManager {
     void deleteSubtaskById(int id);
 
     List<Task> getHistory();
+
+    Set<Task> getPrioritizedTasks();
 
     void setCurrentCount(int num);
 }

@@ -1,8 +1,6 @@
 package handlers;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import service.TaskManager;
 import model.Task;
 import com.sun.net.httpserver.HttpExchange;

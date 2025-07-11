@@ -43,7 +43,6 @@ class FileBackedTaskManagerTest {
             while (reader.ready()) {
                 line = reader.readLine();
                 line = line.trim();
-
                 if (!line.isEmpty()) {
                     lines.add(line);
                 }
@@ -53,7 +52,7 @@ class FileBackedTaskManagerTest {
         }
 
         assertEquals(1, lines.size());
-        assertEquals("id,type,name,status,description,epic", lines.get(0));
+        assertEquals("id,type,name,status,description,epic,duration,startTime,endTime", lines.get(0));
         assertTrue(fileBackedTaskManager.getTasks().isEmpty());
         assertTrue(fileBackedTaskManager.getEpics().isEmpty());
         assertTrue(fileBackedTaskManager.getSubtasks().isEmpty());
@@ -84,7 +83,6 @@ class FileBackedTaskManagerTest {
             while (reader.ready()) {
                 line = reader.readLine();
                 line = line.trim();
-
                 if (!line.isEmpty()) {
                     lines.add(line);
                 }
@@ -94,7 +92,7 @@ class FileBackedTaskManagerTest {
         }
 
         assertEquals(4, lines.size());
-        assertEquals("id,type,name,status,description,epic", lines.get(0));
+        assertEquals("id,type,name,status,description,epic,duration,startTime,endTime", lines.get(0));
         assertEquals("1,TASK,Test1 addNewTask,NEW,Test1 addNewTask description", lines.get(1));
         assertEquals("2,EPIC,Test2 addNewEpic,NEW,Test2 addNewEpic description", lines.get(2));
         assertEquals("3,SUBTASK,Test3 addNewSubtask,NEW,Test3 addNewSubtask description,2", lines.get(3));

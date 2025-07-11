@@ -100,16 +100,11 @@ class HttpTaskServerTest {
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/tasks/10"))
+                .uri(URI.create("http://localhost:8080/tasks/16"))
                 .GET()
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println(taskManager.getTasksList());
-        System.out.println(taskManager.getEpicsList());
-        System.out.println(taskManager.getSubtasksList());
-        System.out.println(response);
-        System.out.println(response.body());
         Task task4 = gson.fromJson(response.body(), Task.class);
 
         assertEquals(200, response.statusCode());
@@ -124,26 +119,21 @@ class HttpTaskServerTest {
         taskManager.addTask(task1);
         Task task2 = new Task("Test 13", "Testing task 13",
                 Status.NEW, Duration.ofMinutes(13), LocalDateTime.parse("2025-01-13 12:13", formatter));
-        task2.setId(7);
+        task2.setId(13);
         String postTask = gson.toJson(task2);
 
         HttpClient httpClient = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/tasks/7"))
+                .uri(URI.create("http://localhost:8080/tasks/13"))
                 .POST(HttpRequest.BodyPublishers.ofString(postTask))
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println(taskManager.getTasksList());
-        System.out.println(taskManager.getEpicsList());
-        System.out.println(taskManager.getSubtasksList());
-        System.out.println(response);
-        System.out.println(response.body());
 
         assertEquals(201, response.statusCode());
         assertEquals(1, taskManager.getTasksList().size());
-        assertEquals(task1, taskManager.getTaskById(7).get());
+        assertEquals(task1, taskManager.getTaskById(13).get());
     }
 
     @Test
@@ -154,16 +144,11 @@ class HttpTaskServerTest {
 
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/tasks/11"))
+                .uri(URI.create("http://localhost:8080/tasks/17"))
                 .DELETE()
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println(taskManager.getTasksList());
-        System.out.println(taskManager.getEpicsList());
-        System.out.println(taskManager.getSubtasksList());
-        System.out.println(response);
-        System.out.println(response.body());
 
         assertEquals(200, response.statusCode());
         assertEquals(0, taskManager.getTasksList().size());

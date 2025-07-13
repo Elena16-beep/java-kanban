@@ -74,11 +74,20 @@ public class SubtaskHandler extends BaseHttpHandler {
             }
 
             subtask.setId(subtaskId);
-            taskManager.updateSubtask(subtask, subtask.getName(), subtask.getDescription(), subtask.getStatus(), subtask.getDuration(), subtask.getStartTime());
-            sendText(h, gson.toJson(subtask), 201);
+
+            try {
+                taskManager.updateSubtask(subtask, subtask.getName(), subtask.getDescription(), subtask.getStatus(), subtask.getDuration(), subtask.getStartTime());
+                sendText(h, gson.toJson(subtask), 201);
+            } catch (IllegalArgumentException e) {
+                sendHasInteractions(h);
+            }
         } else {
-            taskManager.addSubtask(subtask);
-            sendText(h, gson.toJson(subtask), 201);
+            try {
+                taskManager.addSubtask(subtask);
+                sendText(h, gson.toJson(subtask), 201);
+            } catch (IllegalArgumentException e) {
+                sendHasInteractions(h);
+            }
         }
     }
 

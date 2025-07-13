@@ -74,12 +74,20 @@ public class EpicHandler extends BaseHttpHandler {
             }
 
             epic.setId(epicId);
-            System.out.println("Эпик " + taskManager.getEpicById(epicId).get().getSubtasks().values());
-            taskManager.updateEpic(epic, epic.getName(), epic.getDescription());
-            sendResponse(h, gson.toJson(epic), 201);
+
+            try {
+                taskManager.updateEpic(epic, epic.getName(), epic.getDescription());
+                sendResponse(h, gson.toJson(epic), 201);
+            } catch (IllegalArgumentException e) {
+                sendHasInteractions(h);
+            }
         } else {
-            taskManager.addEpic(epic);
-            sendResponse(h, gson.toJson(epic), 201);
+            try {
+                taskManager.addEpic(epic);
+                sendResponse(h, gson.toJson(epic), 201);
+            } catch (IllegalArgumentException e) {
+                sendHasInteractions(h);
+            }
         }
     }
 

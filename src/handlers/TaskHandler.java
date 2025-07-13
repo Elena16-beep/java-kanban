@@ -76,11 +76,20 @@ public class TaskHandler extends BaseHttpHandler {
             }
 
             task.setId(taskId);
-            taskManager.updateTask(task, task.getName(), task.getDescription(), task.getStatus(), task.getDuration(), task.getStartTime());
-            sendText(h, gson.toJson(task), 201);
+
+            try {
+                taskManager.updateTask(task, task.getName(), task.getDescription(), task.getStatus(), task.getDuration(), task.getStartTime());
+                sendText(h, gson.toJson(task), 201);
+            } catch (IllegalArgumentException e) {
+                sendHasInteractions(h);
+            }
         } else {
-            taskManager.addTask(task);
-            sendText(h, gson.toJson(task), 201);
+            try {
+                taskManager.addTask(task);
+                sendText(h, gson.toJson(task), 201);
+            } catch (IllegalArgumentException e) {
+                sendHasInteractions(h);
+            }
         }
     }
 

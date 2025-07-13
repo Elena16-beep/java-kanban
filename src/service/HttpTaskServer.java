@@ -1,8 +1,12 @@
 package service;
 
 import com.google.gson.Gson;
-import handlers.*;
 import com.sun.net.httpserver.HttpServer;
+import handlers.TaskHandler;
+import handlers.SubtaskHandler;
+import handlers.EpicHandler;
+import handlers.HistoryHandler;
+import handlers.PrioritizedHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
@@ -17,14 +21,14 @@ public class HttpTaskServer {
     }
 
     public void start() throws IOException {
-        httpServer = HttpServer.create(new InetSocketAddress(8080), 0);
+        httpServer = HttpServer.create(new InetSocketAddress(8081), 0);
         httpServer.createContext("/tasks", new TaskHandler(taskManager, gson));
         httpServer.createContext("/subtasks", new SubtaskHandler(taskManager, gson));
         httpServer.createContext("/epics", new EpicHandler(taskManager, gson));
         httpServer.createContext("/history", new HistoryHandler(taskManager, gson));
         httpServer.createContext("/prioritized", new PrioritizedHandler(taskManager, gson));
         httpServer.start();
-        System.out.println("Сервер запущен на 8080 порту");
+        System.out.println("Сервер запущен на 8081 порту");
     }
 
     public void stop() {

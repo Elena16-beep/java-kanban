@@ -2,6 +2,7 @@ package model;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Subtask extends Task {
     private int idEpic;
@@ -53,13 +54,13 @@ public class Subtask extends Task {
         if (startTime != null) {
             str = str +
                     "," + '\n' + "        " + "дата и время, когда предполагается приступить к выполнению: " +
-                    startTime.format(formatter);
+                    startTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
         }
 
         if (getEndTime() != null) {
             str = str +
                     "," + '\n' + "        " + "дата и время завершения: " +
-                    getEndTime().format(formatter);
+                    getEndTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
         }
 
         str = str + '\n';
